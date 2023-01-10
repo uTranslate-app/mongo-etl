@@ -17,10 +17,12 @@ func main() {
 
 	// This is our buffer now
 	var lines []string
-	var i int = 0
+	var i int
 
 	for _, file := range files {
 		fmt.Println(file)
+		i = 0
+
 		body := getFileBody(bucket, file, svc)
 		defer body.Close()
 
@@ -33,6 +35,7 @@ func main() {
 				lines = append(lines, scanner.Text())
 			}
 			if len(lines) == linesInsert*4 {
+				fmt.Println(getStructList(lines))
 				lines = make([]string, 0)
 			}
 			i++
