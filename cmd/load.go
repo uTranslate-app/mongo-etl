@@ -10,7 +10,7 @@ import (
 )
 
 func connectMongo() *mongo.Client {
-	uri := os.Getenv("")
+	uri := os.Getenv("MONGODB_URI")
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
 	if err != nil {
 		panic(err)

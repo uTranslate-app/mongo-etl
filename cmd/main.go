@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	linesInsert int    = 1000
+	linesInsert int    = 10000
 	bucket      string = "utranslate-app"
 	region      string = "sa-east-1"
 	db          string = "uTranslate"
@@ -44,5 +44,6 @@ func main() {
 			i++
 		}
 		insertSentences(mongoClient, db, col, getStructList(lines))
+		lines = make([]string, 0)
 	}
 }
