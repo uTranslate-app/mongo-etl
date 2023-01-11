@@ -5,6 +5,7 @@ go 1.19
 require go.mongodb.org/mongo-driver v1.11.1
 
 require (
+	github.com/aws/aws-lambda-go v1.37.0 // indirect
 	github.com/aws/aws-sdk-go v1.44.175 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect

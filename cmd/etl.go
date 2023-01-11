@@ -1,4 +1,4 @@
-package main
+package etl
 
 import (
 	"bufio"
@@ -7,13 +7,13 @@ import (
 )
 
 const (
-	linesInsert int    = 10000
+	linesInsert int    = 1000
 	bucket      string = "utranslate-app"
 	region      string = "sa-east-1"
 	db          string = "uTranslate"
 )
 
-func main() {
+func Start() {
 	svc := connect()
 	mongoClient := connectMongo()
 	files := getTMXFilesNames(bucket, svc)

@@ -1,7 +1,6 @@
-package main
+package etl
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -42,7 +41,7 @@ func getFileBody(bucket string, TMXFile string, svc *s3.S3) io.ReadCloser {
 	}
 	result, err := svc.GetObject(requestInput)
 	if err != nil {
-		fmt.Println(err)
+		ExitErrorf("Error %v", err)
 	}
 
 	return result.Body
