@@ -5,13 +5,13 @@ import (
 )
 
 type sent struct {
-	lang string
-	sent string
+	Lang string
+	Sent string
 }
 
 type pair struct {
-	sent_a sent
-	sent_b sent
+	Sent_a sent
+	Sent_b sent
 }
 
 func toSentStruct(rawPair []string) pair {
@@ -36,8 +36,8 @@ func toSentStruct(rawPair []string) pair {
 	}
 }
 
-func getStructList(sentences []string) []pair {
-	pairs := make([]pair, 0)
+func getStructList(sentences []string) []interface{} {
+	pairs := make([]interface{}, 0)
 	for i := 0; i < len(sentences)-2; i = i + 4 {
 		pairs = append(pairs, toSentStruct(sentences[i:i+4]))
 	}

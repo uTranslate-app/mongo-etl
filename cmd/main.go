@@ -3,24 +3,27 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"strings"
 )
 
 const (
-	linesInsert int    = 5
+	linesInsert int    = 1000
 	bucket      string = "utranslate-app"
 	region      string = "sa-east-1"
+	db          string = "uTranslate"
 )
 
 func main() {
 	svc := connect()
+	mongoClient := connectMongo()
 	files := getTMXFilesNames(bucket, svc)
 
-	// This is our buffer now
 	var lines []string
 	var i int
 
 	for _, file := range files {
 		fmt.Println(file)
+		col := strings.Split(file, "/")[0]
 		i = 0
 
 		body := getFileBody(bucket, file, svc)
@@ -35,10 +38,11 @@ func main() {
 				lines = append(lines, scanner.Text())
 			}
 			if len(lines) == linesInsert*4 {
-				fmt.Println(getStructList(lines))
+				insertSentences(mongoClient, db, col, getStructList(lines))
 				lines = make([]string, 0)
 			}
 			i++
 		}
+		insertSentences(mongoClient, db, col, getStructList(lines))
 	}
 }
