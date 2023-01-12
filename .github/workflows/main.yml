@@ -28,6 +28,6 @@ jobs:
           zip_file: deployment.zip
           memory_size: 128
           timeout: 10
-          handler: foobar
-          role: arn:aws:iam::xxxxxxxxxxx:role/test1234
+          handler: main
+          role: arn:aws:lambda:sa-east-1:175302989601:function:mongo-etl
           runtime: nodejs16.x
