@@ -8,22 +8,17 @@ import (
 	"strings"
 )
 
-const (
-	linesInsert int    = 1000
-	bucket      string = "utranslate-app"
-	region      string = "sa-east-1"
-	db          string = "uTranslate"
-)
+const linesInsert int = 1000
 
-func Start() {
-	svc := connect()
-	mongoClient := connectMongo()
+func Start(config Config) {
+	svc := connect(config.Region)
+	mongoClient := connectMongo(config.MongoUri)
 	defer func() {
 		if err := mongoClient.Disconnect(context.TODO()); err != nil {
 			log.Fatal(err.Error())
 		}
 	}()
-	files := getTMXFilesNames(bucket, svc)
+	files := getTMXFilesNames(config.Bucket, svc)
 
 	var lines []string
 	var i int
@@ -31,10 +26,10 @@ func Start() {
 	for _, file := range files {
 		fmt.Println(file)
 		collName := strings.Split(file, "/")[0]
-		coll := mongoClient.Database(db).Collection(collName)
+		coll := mongoClient.Database(config.DbName).Collection(collName)
 		i = 0
 
-		body := getFileBody(bucket, file, svc)
+		body := getFileBody(config.Bucket, file, svc)
 		defer body.Close()
 
 		scanner := bufio.NewScanner(body)
@@ -45,12 +40,12 @@ func Start() {
 				lines = append(lines, scanner.Text())
 			}
 			if len(lines) == linesInsert*4 {
-				insertSentences(coll, db, getStructList(lines))
+				insertSentences(coll, config.DbName, getStructList(lines))
 				lines = make([]string, 0)
 			}
 			i++
 		}
-		insertSentences(coll, db, getStructList(lines))
+		insertSentences(coll, config.DbName, getStructList(lines))
 		lines = make([]string, 0)
 	}
 

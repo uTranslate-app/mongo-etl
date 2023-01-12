@@ -4,15 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func connectMongo() *mongo.Client {
-	uri := os.Getenv("MONGODB_URI")
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+func connectMongo(mongodb_uri string) *mongo.Client {
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongodb_uri))
 	if err != nil {
 		log.Fatal(err.Error())
 	}

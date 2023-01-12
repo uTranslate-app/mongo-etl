@@ -2,8 +2,14 @@ package main
 
 import (
 	etl "etl/cmd"
+	"log"
 )
 
 func main() {
-	etl.Start()
+	config, err := etl.LoadConfig(".")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	etl.Start(config)
 }

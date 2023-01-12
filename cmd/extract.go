@@ -8,9 +8,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-func connect() *s3.S3 {
+func connect(region string) *s3.S3 {
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("sa-east-1")},
+		Region: aws.String(region)},
 	)
 	if err != nil {
 		ExitErrorf("Unable to connect, %v", err)
