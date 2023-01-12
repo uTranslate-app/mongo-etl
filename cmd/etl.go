@@ -2,7 +2,9 @@ package etl
 
 import (
 	"bufio"
+	"context"
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -16,6 +18,11 @@ const (
 func Start() {
 	svc := connect()
 	mongoClient := connectMongo()
+	defer func() {
+		if err := mongoClient.Disconnect(context.TODO()); err != nil {
+			log.Fatal(err.Error())
+		}
+	}()
 	files := getTMXFilesNames(bucket, svc)
 
 	var lines []string
@@ -46,4 +53,5 @@ func Start() {
 		insertSentences(coll, db, getStructList(lines))
 		lines = make([]string, 0)
 	}
+
 }
