@@ -23,5 +23,5 @@ func insertSentences(coll *mongo.Collection, db string, docs []interface{}) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	fmt.Printf("Documents inserted: %v\n", len(result.InsertedIDs))
+	fmt.Printf("Documents inserted: %v, in collection %v\n", len(result.InsertedIDs), coll.Name())
 }
