@@ -1,9 +1,10 @@
-module etl
+module github.com/uTranslate-app/uTranslate-api
 
 go 1.19
 
 require (
 	github.com/aws/aws-sdk-go v1.44.175
+	github.com/go-chi/chi v1.5.4
 	github.com/spf13/viper v1.14.0
 	go.mongodb.org/mongo-driver v1.11.1
 )

@@ -1,4 +1,4 @@
-package etl
+package configs
 
 import (
 	"log"
@@ -6,25 +6,30 @@ import (
 	"github.com/spf13/viper"
 )
 
+var Cfg Config
+
 type Config struct {
 	MongoUri string `mapstructure:"MONGODB_URI"`
 	DbName   string `mapstructure:"DB_NAME"`
 	Region   string `mapstructure:"REGION"`
 	Bucket   string `mapstructure:"BUCKET"`
+	Port     string `mapstructure:"PORT"`
 }
 
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig(path string) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 
 	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
+	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	err = viper.Unmarshal(&config)
-	return
+	err = viper.Unmarshal(&Cfg)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 }
