@@ -5,14 +5,26 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/uTranslate-app/uTranslate-api/api/v1/handlers"
 	"github.com/uTranslate-app/uTranslate-api/configs"
+	"github.com/uTranslate-app/uTranslate-api/internal/usecases/etl"
 )
 
-func ServeRouter() {
-	r := chi.NewRouter()
+func ServeRouter(loader *etl.Loader) {
+	var c = new(controller)
+	c.loader = *loader
 
-	r.Get("/", handlers.Etl)
+	r := chi.NewRouter()
+	r.Get("/", c.Etl)
 
 	http.ListenAndServe(fmt.Sprintf(":%s", configs.Cfg.Port), r)
+}
+
+type controller struct {
+	loader etl.Loader
+}
+
+func (c controller) Etl(w http.ResponseWriter, r *http.Request) {
+	c.loader.LoadLines()
+
+	w.Write([]byte("hello"))
 }

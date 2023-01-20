@@ -10,9 +10,14 @@ import (
 	"github.com/uTranslate-app/uTranslate-api/configs"
 )
 
-func connect(region string) *s3.S3 {
+type ExtractS3 struct {
+	Bucket string
+	Region string
+}
+
+func (es3 ExtractS3) Connect() *s3.S3 {
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String(region)},
+		Region: aws.String(es3.Region)},
 	)
 	if err != nil {
 		log.Fatalf("Unable to connect, %v", err)
@@ -21,11 +26,11 @@ func connect(region string) *s3.S3 {
 	return s3.New(sess)
 }
 
-func GetTMXFilesNames() []string {
+func (es3 ExtractS3) GetTMXFilesNames() []string {
 	var TMXFilesNames []string
 
-	svc := connect(configs.Cfg.Region)
-	resp, err := svc.ListObjectsV2(&s3.ListObjectsV2Input{Bucket: aws.String(configs.Cfg.Bucket)})
+	sess := es3.Connect()
+	resp, err := sess.ListObjectsV2(&s3.ListObjectsV2Input{Bucket: aws.String(configs.Cfg.Bucket)})
 	if err != nil {
 		log.Fatalf("Unable to list items in bucket %q, %v", configs.Cfg.Bucket, err)
 	}
@@ -38,17 +43,22 @@ func GetTMXFilesNames() []string {
 	return TMXFilesNames
 }
 
-func GetFileBody(TMXFile string) io.ReadCloser {
-	svc := connect(configs.Cfg.Region)
+func (es3 ExtractS3) GetFilesBody() map[string]io.ReadCloser {
+	FilesBodies := make(map[string]io.ReadCloser)
 
-	requestInput := &s3.GetObjectInput{
-		Bucket: aws.String(configs.Cfg.Bucket),
-		Key:    aws.String(TMXFile),
-	}
-	result, err := svc.GetObject(requestInput)
-	if err != nil {
-		log.Fatalf("Error %v", err)
-	}
+	sess := es3.Connect()
+	filesNames := es3.GetTMXFilesNames()
 
-	return result.Body
+	for _, TMXFile := range filesNames {
+		requestInput := &s3.GetObjectInput{
+			Bucket: aws.String(configs.Cfg.Bucket),
+			Key:    aws.String(TMXFile),
+		}
+		result, err := sess.GetObject(requestInput)
+		if err != nil {
+			log.Fatalf("Error %v", err)
+		}
+		FilesBodies[TMXFile] = result.Body
+	}
+	return FilesBodies
 }
