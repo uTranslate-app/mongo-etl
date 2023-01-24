@@ -8,4 +8,5 @@ type Sent struct {
 type Pair struct {
 	Sent_a Sent
 	Sent_b Sent
+	Type   string
 }

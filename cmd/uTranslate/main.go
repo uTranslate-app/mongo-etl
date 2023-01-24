@@ -3,9 +3,10 @@ package main
 import (
 	"github.com/uTranslate-app/uTranslate-api/api/v1/router"
 	"github.com/uTranslate-app/uTranslate-api/configs"
-	"github.com/uTranslate-app/uTranslate-api/internal/extract"
+	"github.com/uTranslate-app/uTranslate-api/internal/gateways/extract"
 	"github.com/uTranslate-app/uTranslate-api/internal/gateways/mongo"
 	"github.com/uTranslate-app/uTranslate-api/internal/usecases/etl"
+	"github.com/uTranslate-app/uTranslate-api/internal/usecases/retriever"
 )
 
 func main() {
@@ -22,5 +23,8 @@ func main() {
 	loader.Extractor = s3extractor
 	loader.Rep = mongoRepo
 
-	router.ServeRouter(loader)
+	var ret = new(retriever.Retriever)
+	ret.Rep = mongoRepo
+
+	router.ServeRouter(loader, ret)
 }

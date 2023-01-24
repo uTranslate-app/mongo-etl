@@ -14,6 +14,7 @@ type Config struct {
 	Region   string `mapstructure:"REGION"`
 	Bucket   string `mapstructure:"BUCKET"`
 	Port     string `mapstructure:"PORT"`
+	SentColl string `mapstructure:SENTCOLL`
 }
 
 func LoadConfig(path string) {

@@ -14,7 +14,7 @@ type Loader struct {
 	Rep       repository.Repository
 }
 
-func (l Loader) ToSentStruct(rawPair []string) entities.Pair {
+func (l Loader) ToSentStruct(rawPair []string, file string) entities.Pair {
 	raw_a := rawPair[1]
 	raw_b := rawPair[2]
 
@@ -23,6 +23,8 @@ func (l Loader) ToSentStruct(rawPair []string) entities.Pair {
 
 	sentence_a := strings.Split(strings.Split(raw_a, "<seg>")[1], "</seg>")[0]
 	sentence_b := strings.Split(strings.Split(raw_b, "<seg>")[1], "</seg>")[0]
+
+	sentType := strings.Split(file, "/")[0]
 
 	return entities.Pair{
 		entities.Sent{
@@ -33,13 +35,14 @@ func (l Loader) ToSentStruct(rawPair []string) entities.Pair {
 			lang_b,
 			sentence_b,
 		},
+		sentType,
 	}
 }
 
-func (l Loader) GetStructList(sentences []string) []interface{} {
+func (l Loader) GetStructList(sentences []string, file string) []interface{} {
 	pairs := make([]interface{}, 0)
 	for i := 0; i < len(sentences)-2; i = i + 4 {
-		pairs = append(pairs, l.ToSentStruct(sentences[i:i+4]))
+		pairs = append(pairs, l.ToSentStruct(sentences[i:i+4], file))
 	}
 	return pairs
 }
@@ -62,11 +65,11 @@ func (l Loader) LoadLines() {
 				lines = append(lines, scanner.Text())
 			}
 			if len(lines) == linesInsert*4 {
-				l.Rep.InsertSentences(file, l.GetStructList(lines))
+				l.Rep.InsertSentences(file, l.GetStructList(lines, file))
 				lines = make([]string, 0)
 			}
 			i++
 		}
-		l.Rep.InsertSentences(file, l.GetStructList(lines))
+		l.Rep.InsertSentences(file, l.GetStructList(lines, file))
 	}
 }

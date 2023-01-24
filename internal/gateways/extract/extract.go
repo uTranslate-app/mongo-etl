@@ -58,6 +58,7 @@ func (es3 ExtractS3) GetFilesBody() map[string]io.ReadCloser {
 		if err != nil {
 			log.Fatalf("Error %v", err)
 		}
+
 		FilesBodies[TMXFile] = result.Body
 	}
 	return FilesBodies
